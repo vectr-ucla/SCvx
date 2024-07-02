@@ -1,11 +1,6 @@
 import sympy as sp
 import numpy as np
 import cvxpy as cvx
-
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent))
-
 from utils import euler_to_quat
 from global_parameters import K
 

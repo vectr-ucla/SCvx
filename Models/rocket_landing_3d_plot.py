@@ -76,10 +76,29 @@ def plot(X_in, U_in, sigma_in):
     global X, U
     X = X_in
     U = U_in
-
+    
     fig = plt.figure(figsize=(10, 12))
     my_plot(fig, figures_i)
     cid = fig.canvas.mpl_connect('key_press_event', key_press_event)
+    plt.show()
+
+    fig, axs = plt.subplots(3, 1, figsize=(10, 12))
+    axs[0].plot(X_in[figures_i, 1, :].T, label='x')
+    axs[0].plot(X_in[figures_i, 2, :].T, label='y')
+    axs[0].plot(X_in[figures_i, 3, :].T, label='z')
+    axs[0].legend()
+    axs[0].set_title('Position')
+    axs[1].plot(X_in[figures_i, 7, :].T, label='qw')
+    axs[1].plot(X_in[figures_i, 8, :].T, label='qx')
+    axs[1].plot(X_in[figures_i, 9, :].T, label='qy')
+    axs[1].plot(X_in[figures_i, 10, :].T, label='qz')
+    axs[1].legend()
+    axs[1].set_title('Attitude')
+    axs[2].plot(U_in[figures_i, 0, :].T, label='Fx')
+    axs[2].plot(U_in[figures_i, 1, :].T, label='Fy')
+    axs[2].plot(U_in[figures_i, 2, :].T, label='Fz')
+    axs[2].legend()
+    axs[2].set_title('Thrust')
     plt.show()
 
 
