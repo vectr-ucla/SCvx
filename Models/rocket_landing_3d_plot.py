@@ -79,26 +79,47 @@ def plot(X_in, U_in, sigma_in):
     
     fig = plt.figure(figsize=(10, 12))
     my_plot(fig, figures_i)
-    cid = fig.canvas.mpl_connect('key_press_event', key_press_event)
+    # cid = fig.canvas.mpl_connect('key_press_event', key_press_event)
     plt.show()
 
-    fig, axs = plt.subplots(3, 1, figsize=(10, 12))
-    axs[0].plot(X_in[figures_i, 1, :].T, label='x')
-    axs[0].plot(X_in[figures_i, 2, :].T, label='y')
-    axs[0].plot(X_in[figures_i, 3, :].T, label='z')
-    axs[0].legend()
-    axs[0].set_title('Position')
-    axs[1].plot(X_in[figures_i, 7, :].T, label='qw')
-    axs[1].plot(X_in[figures_i, 8, :].T, label='qx')
-    axs[1].plot(X_in[figures_i, 9, :].T, label='qy')
-    axs[1].plot(X_in[figures_i, 10, :].T, label='qz')
-    axs[1].legend()
-    axs[1].set_title('Attitude')
-    axs[2].plot(U_in[figures_i, 0, :].T, label='Fx')
-    axs[2].plot(U_in[figures_i, 1, :].T, label='Fy')
-    axs[2].plot(U_in[figures_i, 2, :].T, label='Fz')
-    axs[2].legend()
-    axs[2].set_title('Thrust')
+    fig, axs = plt.subplots(3, 2, figsize=(10, 12))
+    i = 0
+    j = 0
+    axs[i][j].plot(X_in[figures_i, 0, :].T, label='m')
+    axs[i][j].legend()
+    axs[i][j].set_title('Mass')
+    i += 1
+    axs[i][j].plot(X_in[figures_i, 1, :].T, label='x')
+    axs[i][j].plot(X_in[figures_i, 2, :].T, label='y')
+    axs[i][j].plot(X_in[figures_i, 3, :].T, label='z')
+    axs[i][j].legend()
+    axs[i][j].set_title('Position')
+    i += 1
+    axs[i][j].plot(X_in[figures_i, 4, :].T, label='vx')
+    axs[i][j].plot(X_in[figures_i, 5, :].T, label='vy')
+    axs[i][j].plot(X_in[figures_i, 6, :].T, label='vz')
+    axs[i][j].legend()
+    axs[i][j].set_title('Velocity')
+    i  = 0
+    j += 1
+    axs[i][j].plot(X_in[figures_i, 7, :].T, label='qw')
+    axs[i][j].plot(X_in[figures_i, 8, :].T, label='qx')
+    axs[i][j].plot(X_in[figures_i, 9, :].T, label='qy')
+    axs[i][j].plot(X_in[figures_i, 10, :].T, label='qz')
+    axs[i][j].legend()
+    axs[i][j].set_title('Attitude')
+    i += 1
+    axs[i][j].plot(X_in[figures_i, 11, :].T, label='wx')
+    axs[i][j].plot(X_in[figures_i, 12, :].T, label='wy')
+    axs[i][j].plot(X_in[figures_i, 13, :].T, label='wz')
+    axs[i][j].legend()
+    axs[i][j].set_title('Angular Velocity')
+    i += 1
+    axs[i][j].plot(U_in[figures_i, 0, :].T, label='Fx')
+    axs[i][j].plot(U_in[figures_i, 1, :].T, label='Fy')
+    axs[i][j].plot(U_in[figures_i, 2, :].T, label='Fz')
+    axs[i][j].legend()
+    axs[i][j].set_title('Thrust')
     plt.show()
 
 

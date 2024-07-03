@@ -46,7 +46,7 @@ class Model:
     # State constraints
     r_I_init = np.array((0., 200., 200.))  # 2000 m, 200 m, 200 m
     v_I_init = np.array((-50., -100., -50.))  # -300 m/s, 50 m/s, 50 m/s
-    q_B_I_init = euler_to_quat((0, 0, 0))
+    q_B_I_init = euler_to_quat((0, 0, 0)) # r,p,y
     w_B_init = np.deg2rad(np.array((0., 0., 0.)))
 
     r_I_final = np.array((0., 0., 0.))
@@ -85,16 +85,21 @@ class Model:
     def set_random_initial_state(self):
         self.r_I_init[2] = 500
         self.r_I_init[0:2] = np.random.uniform(-300, 300, size=2)
+        # self.r_I_init[0:2] = [0, 0]
 
         self.v_I_init[2] = np.random.uniform(-100, -60)
         self.v_I_init[0:2] = np.random.uniform(-0.5, -0.2, size=2) * self.r_I_init[0:2]
+        # self.v_I_init[2] = 0
+        # self.v_I_init[0:2] = [0, 0]
 
         self.q_B_I_init = euler_to_quat((np.random.uniform(-30, 30),
                                          np.random.uniform(-30, 30),
                                          0))
+        # self.q_B_I_init = euler_to_quat((0, 0, 0))
         self.w_B_init = np.deg2rad((np.random.uniform(-20, 20),
                                     np.random.uniform(-20, 20),
                                     0))
+        # self.w_B_init = np.deg2rad((0, 0, 0))
 
     # ------------------------------------------ Start normalization stuff
     def __init__(self):
