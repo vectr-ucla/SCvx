@@ -82,7 +82,7 @@ def plot(X_in, U_in, sigma_in):
     # cid = fig.canvas.mpl_connect('key_press_event', key_press_event)
     plt.show()
 
-    fig, axs = plt.subplots(3, 2, figsize=(10, 12))
+    fig, axs = plt.subplots(4, 2, figsize=(10, 12))
     i = 0
     j = 0
     axs[i][j].plot(X_in[figures_i,  0, :].T, label='m')
@@ -100,6 +100,11 @@ def plot(X_in, U_in, sigma_in):
     axs[i][j].plot(X_in[figures_i,  6, :].T, label='vz')
     axs[i][j].legend()
     axs[i][j].set_title('Velocity')
+    i += 1
+    # plot a single point
+    axs[i][j].plot(sigma_in[figures_i]   .T, 'bo', label='sigma')
+    axs[i][j].legend()
+    axs[i][j].set_title('Final Time')
     i  = 0
     j += 1
     axs[i][j].plot(X_in[figures_i,  7, :].T, label='qw')
@@ -121,8 +126,20 @@ def plot(X_in, U_in, sigma_in):
     axs[i][j].plot(np.linalg.norm(U_in[figures_i,  :, :], axis=0).T, label='F' )
     axs[i][j].legend()
     axs[i][j].set_title('Thrust')
+    i += 1
+    A = np.zeros((3, X_in.shape[2]))
+    for k in range(X_in.shape[2]):
+        q = X_in[figures_i, 7:11, k]
+        C_B_I = np.array([[1 - 2 * (q[2] ** 2 + q[3] ** 2), 2 * (q[1] * q[2] + q[0] * q[3]), 2 * (q[1] * q[3] - q[0] * q[2])],
+                          [2 * (q[1] * q[2] - q[0] * q[3]), 1 - 2 * (q[1] ** 2 + q[3] ** 2), 2 * (q[2] * q[3] + q[0] * q[1])],
+                          [2 * (q[1] * q[3] + q[0] * q[2]), 2 * (q[2] * q[3] - q[0] * q[1]), 1 - 2 * (q[1] ** 2 + q[2] ** 2)]])
+        C_I_B = np.transpose(C_B_I)
+        A[:, k] = np.dot(C_I_B, U_in[figures_i, :, k]) / X_in[figures_i, 0, k] + np.array([0, 0, -9.81])
+    axs[i][j].plot(A[0, :].T, label='ax')
+    axs[i][j].plot(A[1, :].T, label='ay')
+    axs[i][j].plot(A[2, :].T, label='az')
+    axs[i][j].legend()
     plt.show()
-
 
 if __name__ == "__main__":
     import os

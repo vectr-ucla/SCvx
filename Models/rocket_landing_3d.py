@@ -69,6 +69,7 @@ class Model:
     # Thrust limits
     T_max = 800000.  # 800000 [kg*m/s^2]
     T_min = T_max * 0.4
+    # T_min = 100000
 
     # Angular moment of inertia
     J_B = np.diag([4000000., 4000000., 100000.])  # 100000 [kg*m^2], 4000000 [kg*m^2], 4000000 [kg*m^2]
@@ -85,21 +86,16 @@ class Model:
     def set_random_initial_state(self):
         self.r_I_init[2] = 500
         self.r_I_init[0:2] = np.random.uniform(-300, 300, size=2)
-        # self.r_I_init[0:2] = [0, 0]
-
+        
         self.v_I_init[2] = np.random.uniform(-100, -60)
         self.v_I_init[0:2] = np.random.uniform(-0.5, -0.2, size=2) * self.r_I_init[0:2]
-        # self.v_I_init[2] = 0
-        # self.v_I_init[0:2] = [0, 0]
-
+        
         self.q_B_I_init = euler_to_quat((np.random.uniform(-30, 30),
                                          np.random.uniform(-30, 30),
                                          0))
-        # self.q_B_I_init = euler_to_quat((0, 0, 0))
         self.w_B_init = np.deg2rad((np.random.uniform(-20, 20),
                                     np.random.uniform(-20, 20),
                                     0))
-        # self.w_B_init = np.deg2rad((0, 0, 0))
 
     # ------------------------------------------ Start normalization stuff
     def __init__(self):
@@ -109,7 +105,13 @@ class Model:
         and (it seems) precision is lost in the dynamics.
         """
 
-        self.set_random_initial_state()
+        # self.set_random_initial_state()
+        self.r_I_init[0:2] = [0, 0]
+        self.v_I_init[2] = 0
+        self.v_I_init[0:2] = [0, 0]
+        self.q_B_I_init = euler_to_quat((0.25, 0, 0))
+        self.w_B_init = np.deg2rad((0, 0, 0))
+        self.v_I_final[2] = 0.0
 
         self.x_init = np.concatenate(((self.m_wet,), self.r_I_init, self.v_I_init, self.q_B_I_init, self.w_B_init))
         self.x_final = np.concatenate(((self.m_dry,), self.r_I_final, self.v_I_final, self.q_B_I_final, self.w_B_final))
