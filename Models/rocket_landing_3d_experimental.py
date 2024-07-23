@@ -98,7 +98,7 @@ class Model:
                                     0))
 
     # ------------------------------------------ Start normalization stuff
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """
         A large r_scale for a small scale problem will
         ead to numerical problems as parameters become excessively small
@@ -106,12 +106,38 @@ class Model:
         """
 
         # self.set_random_initial_state()
-        self.r_I_init[0:2] = [0, 0]
-        self.v_I_init[2] = 0
-        self.v_I_init[0:2] = [0, 0]
-        self.q_B_I_init = euler_to_quat((0.25, 0, 0))
-        self.w_B_init = np.deg2rad((0, 0, 0))
-        self.v_I_final[2] = 0.0
+        if 'r_I_init' in kwargs:
+            self.r_I_init = kwargs['r_I_init']
+        else:
+            self.r_I_init[0:2] = [0, 0]
+        if 'v_I_init' in kwargs:
+            self.v_I_init = kwargs['v_I_init']
+        else:
+            self.v_I_init[0:3] = [0, 0, 0]
+        if 'q_B_I_init' in kwargs:
+            self.q_B_I_init = kwargs['q_B_I_init']
+        else:
+            self.q_B_I_init = euler_to_quat((0.25, 0, 0))
+        if 'w_B_init' in kwargs:
+            self.w_B_init = kwargs['w_B_init']
+        else:
+            self.w_B_init = np.deg2rad((0, 0, 0))
+        if 'r_I_final' in kwargs:
+            self.r_I_final = kwargs['r_I_final']
+        else:
+            self.r_I_final[0:3] = [0, 0, 0]
+        if 'v_I_final' in kwargs:
+            self.v_I_final = kwargs['v_I_final']
+        else:
+            self.v_I_final[0:3] = [0, 0, 0]
+        if 'q_B_I_final' in kwargs:
+            self.q_B_I_final = kwargs['q_B_I_final']
+        else:
+            self.q_B_I_final = euler_to_quat((0, 0, 0))
+        if 'w_B_final' in kwargs:
+            self.w_B_final = kwargs['w_B_final']
+        else:
+            self.w_B_final = np.deg2rad((0, 0, 0))
 
         self.x_init = np.concatenate(((self.m_wet,), self.r_I_init, self.v_I_init, self.q_B_I_init, self.w_B_init))
         self.x_final = np.concatenate(((self.m_dry,), self.r_I_final, self.v_I_final, self.q_B_I_final, self.w_B_final))
@@ -200,9 +226,13 @@ class Model:
         C_B_I = dir_cosine(x[7:11, 0])
         C_I_B = C_B_I.transpose()
 
+        rho = 1.225
+        S_D = 10
+        C_D = 1.0e-6
+        
         f[0, 0] = - self.alpha_m * u.norm()
         f[1:4, 0] = x[4:7, 0]
-        f[4:7, 0] = 1 / x[0, 0] * C_I_B * u + g_I
+        f[4:7, 0] = 1 / x[0, 0] * C_I_B * u + g_I - 0.5*rho*S_D*C_D*x[4:7, 0].norm()*x[4:7, 0]
         f[7:11, 0] = 1 / 2 * omega(x[11:14, 0]) * x[7: 11, 0]
         f[11:14, 0] = J_B ** -1 * (skew(r_T_B) * u) - skew(x[11:14, 0]) * x[11:14, 0]
 
